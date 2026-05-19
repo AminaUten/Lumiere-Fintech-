@@ -1,0 +1,80 @@
+import { Link, useRouterState } from "@tanstack/react-router";
+import {
+  LayoutDashboard,
+  Brain,
+  AlertTriangle,
+  Wallet,
+  FlaskConical,
+  BarChart3,
+  Sparkles,
+  Settings,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const nav = [
+  { to: "/", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/forecasting", label: "AI Forecasting", icon: Brain },
+  { to: "/alerts", label: "Risk Alerts", icon: AlertTriangle },
+  { to: "/accounts", label: "Liquidity Accounts", icon: Wallet },
+  { to: "/stress-test", label: "Stress Testing", icon: FlaskConical },
+  { to: "/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/copilot", label: "AI Copilot", icon: Sparkles },
+  { to: "/settings", label: "Settings", icon: Settings },
+] as const;
+
+export function Sidebar() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  return (
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar/80 backdrop-blur-xl lg:flex">
+      <div className="flex h-16 items-center gap-2 px-6">
+        <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-primary glow">
+          <span className="text-sm font-bold text-primary-foreground">L</span>
+        </div>
+        <div className="flex flex-col leading-tight">
+          <span className="text-sm font-semibold tracking-wide">Lumiere</span>
+          <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Treasury Intelligence
+          </span>
+        </div>
+      </div>
+
+      <nav className="flex-1 space-y-1 px-3 py-4">
+        {nav.map((item) => {
+          const active = pathname === item.to;
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={cn(
+                "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all",
+                active
+                  ? "bg-sidebar-accent text-foreground"
+                  : "text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-foreground",
+              )}
+            >
+              {active && (
+                <span className="absolute inset-y-2 left-0 w-0.5 rounded-r bg-primary glow" />
+              )}
+              <Icon className={cn("h-4 w-4", active && "text-primary")} />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="border-t border-sidebar-border p-4">
+        <div className="glass rounded-lg p-3">
+          <div className="mb-2 flex items-center gap-2">
+            <span className="pulse-dot h-2 w-2 rounded-full bg-success" />
+            <span className="text-xs font-medium">Live monitoring</span>
+          </div>
+          <p className="text-[11px] text-muted-foreground">
+            Real-time stream • 1,284 events/min
+          </p>
+        </div>
+      </div>
+    </aside>
+  );
+}
